@@ -1,9 +1,13 @@
 const express = require('express');
 const path = require('path');
-const noteData = require('./db/db.json');
-const fs = require('fs');
+
 const PORT = 3001;
 const app = express();
+const uuid = require('./helpers/uuid');
+const noteList = require('./db/db.json');
+
+const fs = require('fs');
+
 // Sets up the Express app to handle data parsing
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
@@ -27,29 +31,36 @@ app.get('/api/notes', (req, res) => {
     //log that a get request is received to the terminal 
     console.info(`${req.method} request received to get notes`);
     //sending all notes to the client
-    return res.json(noteData);
+    res.json(noteList);
 })
 
 //post request to add a note
 app.post('/api/notes', (req, res) => {
     //log that a post request is received to the terminal
     console.info(`${req.method} request received to add a review`);
-    
-    //prepare a note object to send back to the client 
-    let note;
-    if (req.body && req.body.product) {
-        note = {
-            status: 'success',
-            data: req.body,
-        }
-        noteData.push(req.body);
-        res.json(`Note for ${note.data.product} has been added!`)
-    } else {
-        res.json(`Note must at least contain a title`)
-    }
 
-    console.log(req.body);
-})
+    //prepare a note object to send back to the client
+    const {title, text } =  req.body;
+
+    if (title && text) {
+        const newNote = {
+            title,
+            text,
+            id: uuid(),
+        };
+
+        noteList.push(newNote);
+        
+        const response = {
+            status: 'success',
+            body: newNote,
+        };
+        
+        res.json(response);
+    } else {
+        res.json('Error in posting note');
+    }
+});
 
 
 //Fallback route for when a user attempts to visit routes that dont exist
