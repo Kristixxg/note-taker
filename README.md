@@ -6,10 +6,14 @@ This application can be used to write and save notes, as well as to retrieve not
 
 Deployed link to Heroku is here: https://notetakerkxx.herokuapp.com/
 
-## Usage
-Screenshot of the web application:
 
-<img src="assets/Screen%20Shot%202022-04-25%20at%209.10.41%20PM.png" width="600">
+## Usage
+Screenshots of the web application:
+
+<img src="./public/assets/img/Screen%20Shot%202022-04-27%20at%2010.47.37%20PM.png" width="600">
+
+<img src="./public/assets/img/Screen%20Shot%202022-04-27%20at%2010.51.55%20PM.png" width="600">
+
 
 ## License
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
