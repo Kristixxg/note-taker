@@ -1,12 +1,11 @@
 const express = require('express');
 const path = require('path');
-
+const fs = require('fs');
 const PORT = process.env.PORT || 3001;
 const app = express();
 const uuid = require('./helpers/uuid');
-const noteList = require('./db/db.json');
+let noteList = require('./db/db.json');
 
-const fs = require('fs');
 
 // Sets up the Express app to handle data parsing
 app.use(express.urlencoded({ extended: true }));
@@ -40,8 +39,9 @@ app.post('/api/notes', (req, res) => {
     console.info(`${req.method} request received to add a review`);
 
     //prepare a note object to send back to the client
-    const {title, text } =  req.body;
-
+    //destructuring for items in req.body
+    const { title, text } =  req.body;
+    //if both properties are present
     if (title && text) {
         const newNote = {
             title,
@@ -49,7 +49,27 @@ app.post('/api/notes', (req, res) => {
             id: uuid(),
         };
 
-        noteList.push(newNote);
+
+        //obtain existing notes
+        fs.readFile('./db/db.json', 'utf-8', (err, data) => {
+            if (err) {
+                console.error(err);
+            } else {
+                const parsedNotes = JSON.parse(data);
+                parsedNotes.push(newNote);
+                noteList = parsedNotes;
+
+                fs.writeFile('./db/db.json', JSON.stringify(noteList), (err, data) => {
+                    if (err) {
+                        console.err(err)
+                    } else {
+                        console.log('successfully updated notes')
+                    };
+                });
+            };
+        });
+
+        
         
         const response = {
             status: 'success',
