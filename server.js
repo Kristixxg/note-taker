@@ -5,6 +5,7 @@ const PORT = process.env.PORT || 3001;
 const app = express();
 const uuid = require('./helpers/uuid');
 let noteList = require('./db/db.json');
+const { uptime } = require('process');
 
 
 // Sets up the Express app to handle data parsing
@@ -81,6 +82,33 @@ app.post('/api/notes', (req, res) => {
         res.json('Error in posting note');
     }
 });
+
+
+//handle delete
+app.delete("/api/notes/:id", (req, res) => {
+
+    console.log(`${req.method} received`);
+
+    const noteId = req.params.id;
+    const updatedArr = [];
+
+    for (let i=0; i<noteList.length; i++) {
+        if (noteList[i].id !== noteId) {
+            updatedArr.push(arr[i]);
+        }
+    }
+
+    noteList = updatedArr;
+
+    fs.writeFile('./db/db.json', JSON.stringify(noteList), (err, data) => {
+        if (err) {
+            console.err(err)
+        } else {
+            console.log('successfully updated notes')
+        };
+    });
+
+})
 
 
 //Fallback route for when a user attempts to visit routes that dont exist
