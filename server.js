@@ -94,19 +94,28 @@ app.delete("/api/notes/:id", (req, res) => {
 
     for (let i=0; i<noteList.length; i++) {
         if (noteList[i].id !== noteId) {
-            updatedArr.push(arr[i]);
+            updatedArr.push(noteList[i]);
         }
+
+
+    }
+
+    if (updatedArr.length === noteList.length) {
+        res.status(404);
+        return;
     }
 
     noteList = updatedArr;
 
     fs.writeFile('./db/db.json', JSON.stringify(noteList), (err, data) => {
         if (err) {
-            console.err(err)
+            console.err(403)
         } else {
             console.log('successfully updated notes')
         };
     });
+
+    res.json(noteList);
 
 })
 
